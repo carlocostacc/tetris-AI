@@ -3,6 +3,7 @@ from re import T
 import pygame as py
 from blocks import Tetrominos
 from variables import *
+import random as rand
 
 class Canvas:
     def __init__(self):
@@ -11,9 +12,9 @@ class Canvas:
         self.block_speed = 1
         self.level = 1
         self.score = 0
-        self.active_block  = Tetrominos(2,[80,40],1)
+        self.active_block  = Tetrominos(2,[80,40],self.level)
         self.block_previous_pos = []
-        self.next_block = Tetrominos(3,[80,80],1)
+        self.next_block = Tetrominos(3,[80,80],self.level)
 
         #adding a shadow of where the block would end up if it kept falling
         #self.block_shadow = 0
@@ -106,6 +107,7 @@ class Canvas:
                         s2 = py.Surface((38,38))
                         s2.fill(grey_border)
                         win.blit(s2,[y*40,x*40])
+
                     else:
                         s = py.Surface((40,40))
                         s.set_alpha(128)
@@ -139,6 +141,12 @@ class Canvas:
     def get_grid(self):
         return self.grid
 
+    def spawn_block(self):
+        del self.active_block
+        self.active_block = self.next_block
+        del self.next_block
+        self.next_block = self.next_block = Tetrominos(rand.randrange(0,6,1),[80,80],self.level)
+
     def update_block_grid(self):
         block = self.active_block.get_grid()
         rows = len(block)
@@ -153,9 +161,8 @@ class Canvas:
                 for j in range(cols):
                     if(block[i][j] != 0):
                         self.grid[grid_position[1] + i][grid_position[0] + j] = block[i][j]
-            del self.active_block
-            self.active_block = self.next_block
-            del self.next_block
+            self.spawn_block()
+            
                         
 
 

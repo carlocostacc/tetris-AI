@@ -31,7 +31,7 @@ class Tetrominos:
                   [5,5,0],
                   [0,0,0]]
 
-        type_S = [[6,6,0],
+        type_Z = [[6,6,0],
                   [0,6,6],
                   [0,0,0]]
 
@@ -40,7 +40,7 @@ class Tetrominos:
                   [0,0,0]]
 
         self.type = type
-        self.types = [type_I, type_J, type_L, type_O, type_S, type_T]
+        self.types = [type_I, type_J, type_L, type_O, type_S,type_Z, type_T]
         self.block_type = self.types[type]
 
 
@@ -161,7 +161,7 @@ class Tetrominos:
         grid_rows = len(grid)
         grid_cols = len(grid[0])
         #position of the top left corner of block matrix in the grid 
-        grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
+        grid_position = int((position[0])/40 - 2), int((position[1])/40 - 2)
         print(grid_position)
         for i in range(rows):
             for j in range(cols):
@@ -177,11 +177,15 @@ class Tetrominos:
                     print("2")
                     return False
                 # check for attempting too move out of the play area to the right
-                if (block[j][cols - i - 1] !=0 and (grid_position[0] + (cols - i  - 1)) > grid_cols):
+                if (block[j][cols - i - 1] !=0 and (grid_position[0] + (cols - i)) > grid_cols):
                     print("3")
+                    print((grid_position[0] + (cols - i)))
+                    print(grid_cols)
                     return False
                 # check for attempting too move out of the play area to the buttom 
-                if(block[rows- i -1][j] != 0 and (grid_position[1] + rows - i) >= grid_rows):
+                if(block[rows- i -1][j] != 0 and (grid_position[1] + rows - i -1) >= grid_rows):
+                    print(grid_position[1] + rows - i)
+                    print(grid_rows)
                     print("4")
                     return False 
                 

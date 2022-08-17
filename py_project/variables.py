@@ -13,7 +13,7 @@ grey_border = (31,31,31)
 pinkish = (177, 189, 87)
 background = (90,90,90)
 
-colors = [blue, dark_blue, orange, yellow, green, purple, red]
+colors = [blue, dark_blue, orange, yellow, green, red, purple]
 
 py.init()
 
