@@ -12,9 +12,9 @@ class Canvas:
         self.block_speed = 1
         self.level = 1
         self.score = 0
-        self.active_block  = Tetrominos(2,[80,40],self.level)
+        self.active_block  = Tetrominos(0,[80,40],self.level)
         self.block_previous_pos = []
-        self.next_block = Tetrominos(3,[80,80],self.level)
+        self.next_block = Tetrominos(0,[80,80],self.level)
 
         #adding a shadow of where the block would end up if it kept falling
         #self.block_shadow = 0

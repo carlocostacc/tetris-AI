@@ -55,13 +55,18 @@ class Tetrominos:
         grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
         hit_buttom = False
 
+        
         for i in range(rows):
             for j in range(cols):
+                # checks if the block has touched the buttom of the grid
                 if(self.block_type[rows- i -1][j] != 0 and (grid_position[1] + rows - i) >= grid_rows):
                     hit_buttom = True
                     self.placed = True
-    
-                
+                #check if the block underneath is a occupied or not
+                if((grid_position[1] + rows - i) < 24 and (grid_position[0] + j) < 10):
+                    if(self.block_type[rows- i -1][j] != 0 and grid[grid_position[1] + rows - i][grid_position[0] + j] != 0):
+                        self.placed = True
+
         if (int((temp[1] + speed))%40 == 0) and hit_buttom == False:
             
             self.position [1]= temp[1]
@@ -123,6 +128,8 @@ class Tetrominos:
 
 
     def rotate_block(self):
+        #TODO  fix the error when rotating the I block
+
         rows = len(self.block_type)
         cols = len(self.block_type[0])
         temp = [x[:] for x in [[0] * rows] * cols]
@@ -162,30 +169,38 @@ class Tetrominos:
         grid_cols = len(grid[0])
         #position of the top left corner of block matrix in the grid 
         grid_position = int((position[0])/40 - 2), int((position[1])/40 - 2)
-        print(grid_position)
+        
         for i in range(rows):
             for j in range(cols):
                 #print(block[i][j])
                 #print(grid[grid_position[1] +i][grid_position[0] + j])
-                if ((grid_position[1]) > 0 and (grid_position[0] < 10)):
+                if ((grid_position[1] + i) < 24 and (grid_position[0] + j < 9)):
+                    print(grid_position[1] +i,grid_position[0] + j)
                     if(block[i][j] != 0 and grid[grid_position[1] +i][grid_position[0] + j] != 0):
                         #there is already a block there cannot be moved 
                         print("1")
                         return False
                 # check for attempting too move out of the play area to the left 
-                if(block[j][i] != 0 and (grid_position[0] + i) < 0):
-                    print("2")
-                    return False
+                if(self.type != 0):
+                    if(block[j][i] != 0 and (grid_position[0] + i) < 0):
+                        print("2")
+                        return False
+                else:
+                    if(block[i][j] != 0 and (grid_position[0] + i) < 0):
+                        print("2")
+                        return False
+
                 # check for attempting too move out of the play area to the right
-                if (block[j][cols - i - 1] !=0 and (grid_position[0] + (cols - i)) > grid_cols):
-                    print("3")
-                    print((grid_position[0] + (cols - i)))
-                    print(grid_cols)
-                    return False
+                if(self.type != 0):
+                    if (block[j][cols - i - 1] !=0 and (grid_position[0] + (cols - i)) > grid_cols):
+                        print("3")
+                        return False
+                else:
+                    if (block[i][j] !=0 and (grid_position[0] + (j)) > grid_cols):
+                        print("3")
+                        return False
                 # check for attempting too move out of the play area to the buttom 
                 if(block[rows- i -1][j] != 0 and (grid_position[1] + rows - i -1) >= grid_rows):
-                    print(grid_position[1] + rows - i)
-                    print(grid_rows)
                     print("4")
                     return False 
                 
@@ -210,7 +225,8 @@ class Tetrominos:
 
                     self.rotation = 1
                     temp = self.rotate_block()
-                    if(self.is_move_legal(temp, [self.position[0], self.position[1]], grid)):
+
+                    if(self.is_move_legal(temp, [self.position[0], self.position[1]], grid) and self.type != 3):
                         self.block_type = temp
                     
 
@@ -260,7 +276,4 @@ class Tetrominos:
         self.level = level
         self.move(grid)
         self.draw()
-        
-        
-        
         
