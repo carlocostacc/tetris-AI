@@ -55,26 +55,26 @@ class Tetrominos:
         grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
         hit_buttom = False
 
-        
-        for i in range(rows):
-            for j in range(cols):
-                # checks if the block has touched the buttom of the grid
-                if(self.block_type[rows- i -1][j] != 0 and (grid_position[1] + rows - i) >= grid_rows):
-                    hit_buttom = True
-                    self.placed = True
-                #check if the block underneath is a occupied or not
-                if((grid_position[1] + rows - i) < 24 and (grid_position[0] + j) < 10):
-                    if(self.block_type[rows- i -1][j] != 0 and grid[grid_position[1] + rows - i][grid_position[0] + j] != 0):
+        if(self.placed == False):
+            for i in range(rows):
+                for j in range(cols):
+                    # checks if the block has touched the buttom of the grid
+                    if(self.block_type[rows- i -1][j] != 0 and (grid_position[1] + rows - i) >= grid_rows):
+                        hit_buttom = True
                         self.placed = True
+                    #check if the block underneath is a occupied or not
+                    if((grid_position[1] + rows - i) < 24 and (grid_position[0] + j) < 10):
+                        if(self.block_type[rows- i -1][j] != 0 and grid[grid_position[1] + rows - i][grid_position[0] + j] != 0):
+                            self.placed = True
 
-        if (int((temp[1] + speed))%40 == 0) and hit_buttom == False:
+            if (int((temp[1] + speed))%40 == 0) and hit_buttom == False:
+                
+                self.position [1]= temp[1]
+                self.temp_position[1] = (temp[1] + speed)
+            else: 
+                self.temp_position[1] = (temp[1] + speed)
+                
             
-            self.position [1]= temp[1]
-            self.temp_position[1] = (temp[1] + speed)
-        else: 
-            self.temp_position[1] = (temp[1] + speed)
-            
-        
     def draw(self):
         
         rows = len(self.block_type)
@@ -167,13 +167,17 @@ class Tetrominos:
         cols = len(block[0])
         grid_rows = len(grid)
         grid_cols = len(grid[0])
-        #position of the top left corner of block matrix in the grid 
-        grid_position = int((position[0])/40 - 2), int((position[1])/40 - 2)
+        
+        if(self.type != 0):
+            #position of the top left corner of block matrix in the grid 
+            grid_position = int((position[0])/40 - 2), int((position[1])/40 - 2)
+        else:
+            #change the position calculation for the I block
+            grid_position = int((position[0])/40 -1), int((position[1])/40 - 2)
         
         for i in range(rows):
             for j in range(cols):
-                #print(block[i][j])
-                #print(grid[grid_position[1] +i][grid_position[0] + j])
+
                 if ((grid_position[1] + i) < 24 and (grid_position[0] + j < 9)):
                     print(grid_position[1] +i,grid_position[0] + j)
                     if(block[i][j] != 0 and grid[grid_position[1] +i][grid_position[0] + j] != 0):
@@ -186,9 +190,13 @@ class Tetrominos:
                         print("2")
                         return False
                 else:
-                    if(block[i][j] != 0 and (grid_position[0] + i) < 0):
+                    if(block[i][j] != 0 and (grid_position[0] + i) < 0 and len(self.block_type) == 4):
                         print("2")
                         return False
+                    else:
+                        if (block[i][j] != 0 and (grid_position[0] - i) < 0 and len(self.block_type) == 3):
+                            print("2")
+                            return False
 
                 # check for attempting too move out of the play area to the right
                 if(self.type != 0):
@@ -244,13 +252,75 @@ class Tetrominos:
 
                 if event.key == py.K_SPACE:
                     #the block must be placed immidiately
-                    pass
+                    self.place_now(grid)
+                    
                 if event.key == py.K_c:
                     #hold the block
                     pass
         self.update_postion(grid)
         
-    
+    def place_now(self, grid):
+        #place the block instantly, direclty underneath the current position of the block
+        #called when pressing the space bar
+            print("here")
+            temp = self.position
+            rows = len(self.block_type)
+            cols = len(self.block_type[0])
+            can_be_placed = True
+            higher_block = False
+            grid_rows = len(grid)
+            grid_cols = len(grid[0])
+            #grid position might cause some problems down the line
+            grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
+            
+            for i in range(grid_rows):
+                can_be_placed = True
+                higher_block = False
+                for j in range(cols):
+                    #start from the buttom of the grid
+                    #only check the position direccly underneath the block
+                    #place the block on the fist available poosition
+                    if(grid_rows -i-1 ) < 24 and (grid_position[0] + j) < 10:
+                        if (grid[grid_rows -i-1][grid_position[0] + j] == 0 and self.block_type[rows - 1][j] != 0):
+                            
+                            for x in range(rows):
+                                for y in range(cols):
+                                    for z in range(grid_rows - i):
+                                            for y2 in range(cols):
+                                            #check if there is a block way higher
+                                                if(grid_rows -i- z -1 ) < 24 and (grid_position[0] + y2) < 10:
+                                                    if(grid[grid_rows - i - z -1][grid_position[0]+y2] != 0 and self.block_type[rows - (z%3)- 1][y2] != 0):
+                                                        print("higher block aws detected")
+                                                        higher_block = True
+                                    #check if the position found is valid, if there are no blocks around,
+                                    #  that would make it impossible to place it there
+                                    if(grid_rows -i-1 - x) < 24 and (grid_position[0] + y) < 10:
+                                        print(grid_rows -i-1 - x)
+                                        if(grid[grid_rows -i-1 - x][grid_position[0] + y] != 0 and self.block_type[rows - x- 1][y] != 0):
+                                            can_be_placed = False
+                                            print("can be palced is set to false")
+                                    
+                            #checking the buttom of the block
+                            #change the position of the block
+                            if(can_be_placed and not(higher_block)):
+                                print("grid position: ",(grid_rows - i - 1),grid_position[0] + j)
+                                if (self.type == 0):
+                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 2) - int(self.position[1]/40))*40
+                                    print("new pos : ",int(self.position[1])/40 +((grid_rows - i - 2) - int(temp[1]/40)))
+                                    self.placed = True
+                                    break
+                                else: 
+                                    #print("position: ", self.position)
+                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 1) - int(temp[1]/40))*40
+                                    print("new pos : ",int(self.position[1])/40 +((grid_rows - i - 1) - int(temp[1]/40)))
+                                    #print(" new posy : ", int(self.position[1]) +(int(temp[1]/40) - grid_rows - i - 4)*40)
+                                    self.placed = True
+                                    break
+                if(self.placed == True):
+                    break    
+                    
+
+
     def get_postion(self):
         return self.position
 

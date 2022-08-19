@@ -130,7 +130,7 @@ class Canvas:
                     pos =  (j + 1) *40,(rows - i)*40
                     py.draw.rect(win,black,[pos[0],pos[1],40,40])
                     py.draw.rect(win,colors[color],[pos[0],pos[1],38,38])
-                    pass
+                    
                 else: 
                     zeros += 1
                 if(zeros == 10):
@@ -162,6 +162,7 @@ class Canvas:
                     if(block[i][j] != 0):
                         self.grid[grid_position[1] + i][grid_position[0] + j] = block[i][j]
             self.spawn_block()
+            print(self.grid)
             
                         
 
