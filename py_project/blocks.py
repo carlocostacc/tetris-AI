@@ -262,7 +262,7 @@ class Tetrominos:
     def place_now(self, grid):
         #place the block instantly, direclty underneath the current position of the block
         #called when pressing the space bar
-            print("here")
+
             temp = self.position
             rows = len(self.block_type)
             cols = len(self.block_type[0])
@@ -316,6 +316,42 @@ class Tetrominos:
                                     #print(" new posy : ", int(self.position[1]) +(int(temp[1]/40) - grid_rows - i - 4)*40)
                                     self.placed = True
                                     break
+                        else: 
+                            if (grid[grid_rows -i-1][grid_position[0] + j] == 0 and self.block_type[rows - 2][j] != 0 and self.block_type[2] == [0,0,0]):
+                                print(self.block_type)
+                                for x in range(rows):
+                                    for y in range(cols):
+                                        for z in range(grid_rows - i):
+                                                for y2 in range(cols):
+                                                #check if there is a block way higher
+                                                    if(grid_rows -i- z -1 ) < 24 and (grid_position[0] + y2) < 10:
+                                                        if(grid[grid_rows - i - z -1][grid_position[0]+y2] != 0 and self.block_type[rows - (z%3)- 1][y2] != 0):
+                                                            print("higher block aws detected")
+                                                            higher_block = True
+                                        #check if the position found is valid, if there are no blocks around,
+                                        #  that would make it impossible to place it there
+                                        if(grid_rows -i-1 - x) < 24 and (grid_position[0] + y) < 10:
+                                            print(grid_rows -i-1 - x)
+                                            if(grid[grid_rows -i-1 - x][grid_position[0] + y] != 0 and self.block_type[rows - x- 1][y] != 0):
+                                                can_be_placed = False
+                                                print("can be palced is set to false")
+                                        
+                                #checking the buttom of the block
+                                #change the position of the block
+                                if(can_be_placed and not(higher_block)):
+                                    print("grid position: ",(grid_rows - i - 1),grid_position[0] + j)
+                                    if (self.type == 0):
+                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(self.position[1]/40))*40
+                                        print("new pos : ",int(self.position[1])/40 +((grid_rows - i ) - int(temp[1]/40)))
+                                        self.placed = True
+                                        break
+                                    else: 
+                                        #print("position: ", self.position)
+                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(temp[1]/40))*40
+                                        print("new pos : ",int(self.position[1])/40 +((grid_rows - i) - int(temp[1]/40)))
+                                        #print(" new posy : ", int(self.position[1]) +(int(temp[1]/40) - grid_rows - i - 4)*40)
+                                        self.placed = True
+                                        break
                 if(self.placed == True):
                     break    
                     

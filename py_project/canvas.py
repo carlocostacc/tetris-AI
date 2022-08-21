@@ -66,7 +66,7 @@ class Canvas:
         return -1
 
     def delete_completed_line(self):
-        line =  self.check_for_line_completion
+        line =  self.check_for_line_completion()
         if(line != -1):
             for i in range(len(self.grid[0])):
                 self.grid[line][i] = 0
@@ -81,6 +81,7 @@ class Canvas:
                     self.grid[i]  = temp
                     temp = temp2
             self.score_increase
+            print("lines were deleted")
 
                 
     def draw(self):
@@ -145,7 +146,7 @@ class Canvas:
         del self.active_block
         self.active_block = self.next_block
         del self.next_block
-        self.next_block = self.next_block = Tetrominos(rand.randrange(0,6,1),[80,80],self.level)
+        self.next_block = self.next_block = Tetrominos(rand.randrange(0,7,1),[80,80],self.level)
 
     def update_block_grid(self):
         block = self.active_block.get_grid()
@@ -161,6 +162,7 @@ class Canvas:
                 for j in range(cols):
                     if(block[i][j] != 0):
                         self.grid[grid_position[1] + i][grid_position[0] + j] = block[i][j]
+            self.delete_completed_line()
             self.spawn_block()
             print(self.grid)
             
@@ -171,9 +173,10 @@ class Canvas:
         # update the array with the actual position of the falling blocks 
         # delete lines that are completed
         # check if the falling block has touched the blocks that are already placed 
+        
         self.draw()
-        self.active_block.update(self.level, self.grid)
         self.update_block_grid()
         self.draw_blocks()
+        self.active_block.update(self.level, self.grid)
         
         
