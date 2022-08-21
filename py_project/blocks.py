@@ -52,7 +52,7 @@ class Tetrominos:
         cols = len(self.block_type[0])
         grid_rows = len(grid)
         grid_cols = len(grid[0])
-        grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
+        grid_position = int((self.position[0])/variables.blocksize - 2), int((self.position[1])/variables.blocksize - 2)
         hit_buttom = False
 
         if(self.placed == False):
@@ -67,7 +67,7 @@ class Tetrominos:
                         if(self.block_type[rows- i -1][j] != 0 and grid[grid_position[1] + rows - i][grid_position[0] + j] != 0):
                             self.placed = True
 
-            if (int((temp[1] + speed))%40 == 0) and hit_buttom == False:
+            if (int((temp[1] + speed))%variables.blocksize == 0) and hit_buttom == False:
                 
                 self.position [1]= temp[1]
                 self.temp_position[1] = (temp[1] + speed)
@@ -89,24 +89,24 @@ class Tetrominos:
                 for i in range(rows):
                     #postition [1][1] is considered as the center
                     if (i < center[0]):
-                            pos[1] = self.position[1] - (center[0] - i)*40
+                            pos[1] = self.position[1] - (center[0] - i)*variables.blocksize
                     else:
-                        pos[1] = self.position[1] + (i - center[0])*40
+                        pos[1] = self.position[1] + (i - center[0])*variables.blocksize
                     pos[0] = self.position[0]
-                    py.draw.rect(variables.win,variables.black,[pos[0],pos[1],40,40])
-                    py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],38,38])
+                    py.draw.rect(variables.win,variables.black,[pos[0],pos[1],variables.blocksize,variables.blocksize])
+                    py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],variables.blocksize - 2,variables.blocksize - 2])
                  
             else :
                 #I block is the horizontal position
                 for i in range(cols):
                     #postition [1][1] is considered as the center
                     if (i < center[0]):
-                            pos[0] = self.position[0] - (center[0] - i)*40
+                            pos[0] = self.position[0] - (center[0] - i)*variables.blocksize
                     else:
-                        pos[0] = self.position[0] + (i - center[0])*40
+                        pos[0] = self.position[0] + (i - center[0])*variables.blocksize
                     pos[1] = self.position[1]
-                    py.draw.rect(variables.win,variables.black,[pos[0],pos[1],40,40])
-                    py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],38,38])
+                    py.draw.rect(variables.win,variables.black,[pos[0],pos[1],variables.blocksize,variables.blocksize])
+                    py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],variables.blocksize - 2,variables.blocksize - 2])
                      
         elif (self.type != 0):
             for i in range(rows):
@@ -115,16 +115,16 @@ class Tetrominos:
                             #the center is the center of the block matrix self.position of the block drawing is calculated from the center
                             #calculate the where to draw the squares with the given self.position in the argument and the center of the matrix
                             if (i < center[0]):
-                                pos[0] = self.position[0] - (center[0] - j)*40
+                                pos[0] = self.position[0] - (center[0] - j)*variables.blocksize
                             else:
-                                pos[0] = self.position[0] + (j - center[0])*40
+                                pos[0] = self.position[0] + (j - center[0])*variables.blocksize
                             if(j < center[1]):
-                                pos[1] = self.position[1] - (center[1] - i) * 40
+                                pos[1] = self.position[1] - (center[1] - i) * variables.blocksize
                             else :
-                                pos[1] = self.position[1] + (i - center[1]) * 40
+                                pos[1] = self.position[1] + (i - center[1]) * variables.blocksize
                             
-                            py.draw.rect(variables.win,variables.black,[pos[0],pos[1],40,40])
-                            py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],38,38])
+                            py.draw.rect(variables.win,variables.black,[pos[0],pos[1],variables.blocksize,variables.blocksize])
+                            py.draw.rect(variables.win,variables.colors[self.type],[pos[0],pos[1],variables.blocksize - 2,variables.blocksize - 2])
 
 
     def rotate_block(self):
@@ -170,46 +170,38 @@ class Tetrominos:
         
         if(self.type != 0):
             #position of the top left corner of block matrix in the grid 
-            grid_position = int((position[0])/40 - 2), int((position[1])/40 - 2)
+            grid_position = int((position[0])/variables.blocksize - 2), int((position[1])/variables.blocksize - 2)
         else:
             #change the position calculation for the I block
-            grid_position = int((position[0])/40 -1), int((position[1])/40 - 2)
+            grid_position = int((position[0])/variables.blocksize -1), int((position[1])/variables.blocksize - 2)
         
         for i in range(rows):
             for j in range(cols):
 
                 if ((grid_position[1] + i) < 24 and (grid_position[0] + j < 9)):
-                    print(grid_position[1] +i,grid_position[0] + j)
                     if(block[i][j] != 0 and grid[grid_position[1] +i][grid_position[0] + j] != 0):
                         #there is already a block there cannot be moved 
-                        print("1")
                         return False
                 # check for attempting too move out of the play area to the left 
                 if(self.type != 0):
                     if(block[j][i] != 0 and (grid_position[0] + i) < 0):
-                        print("2")
                         return False
                 else:
                     if(block[i][j] != 0 and (grid_position[0] + i) < 0 and len(self.block_type) == 4):
-                        print("2")
                         return False
                     else:
                         if (block[i][j] != 0 and (grid_position[0] - i) < 0 and len(self.block_type) == 3):
-                            print("2")
                             return False
 
                 # check for attempting too move out of the play area to the right
                 if(self.type != 0):
                     if (block[j][cols - i - 1] !=0 and (grid_position[0] + (cols - i)) > grid_cols):
-                        print("3")
                         return False
                 else:
                     if (block[i][j] !=0 and (grid_position[0] + (j)) > grid_cols):
-                        print("3")
                         return False
                 # check for attempting too move out of the play area to the buttom 
                 if(block[rows- i -1][j] != 0 and (grid_position[1] + rows - i -1) >= grid_rows):
-                    print("4")
                     return False 
                 
         return True
@@ -222,12 +214,12 @@ class Tetrominos:
             if event.type == py.QUIT: sys.exit()
             if event.type == py.KEYDOWN:
                 if event.key == py.K_LEFT:
-                    if(self.is_move_legal(self.block_type, [self.position[0] - 40, self.position[1]], grid)):
-                        self.position[0] -= 40
+                    if(self.is_move_legal(self.block_type, [self.position[0] - variables.blocksize, self.position[1]], grid)):
+                        self.position[0] -= variables.blocksize
 
                 if event.key == py.K_RIGHT:
-                    if(self.is_move_legal(self.block_type, [self.position[0] + 40, self.position[1]], grid)):
-                        self.position[0] += 40
+                    if(self.is_move_legal(self.block_type, [self.position[0] + variables.blocksize, self.position[1]], grid)):
+                        self.position[0] += variables.blocksize
 
                 if event.key == py.K_UP:
 
@@ -239,8 +231,8 @@ class Tetrominos:
                     
 
                 if event.key == py.K_DOWN:
-                    if(self.is_move_legal(self.block_type, [self.position[0], self.position[1] + 40], grid)):
-                        self.position[1] += 40
+                    if(self.is_move_legal(self.block_type, [self.position[0], self.position[1] + variables.blocksize], grid)):
+                        self.position[1] += variables.blocksize
                         self.temp_position[1] = self.position[1]
                     
 
@@ -271,7 +263,7 @@ class Tetrominos:
             grid_rows = len(grid)
             grid_cols = len(grid[0])
             #grid position might cause some problems down the line
-            grid_position = int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
+            grid_position = int((self.position[0])/variables.blocksize - 2), int((self.position[1])/variables.blocksize - 2)
             
             for i in range(grid_rows):
                 can_be_placed = True
@@ -290,35 +282,26 @@ class Tetrominos:
                                             #check if there is a block way higher
                                                 if(grid_rows -i- z -1 ) < 24 and (grid_position[0] + y2) < 10:
                                                     if(grid[grid_rows - i - z -1][grid_position[0]+y2] != 0 and self.block_type[rows - (z%3)- 1][y2] != 0):
-                                                        print("higher block aws detected")
                                                         higher_block = True
                                     #check if the position found is valid, if there are no blocks around,
                                     #  that would make it impossible to place it there
                                     if(grid_rows -i-1 - x) < 24 and (grid_position[0] + y) < 10:
-                                        print(grid_rows -i-1 - x)
                                         if(grid[grid_rows -i-1 - x][grid_position[0] + y] != 0 and self.block_type[rows - x- 1][y] != 0):
                                             can_be_placed = False
-                                            print("can be palced is set to false")
                                     
                             #checking the buttom of the block
                             #change the position of the block
                             if(can_be_placed and not(higher_block)):
-                                print("grid position: ",(grid_rows - i - 1),grid_position[0] + j)
                                 if (self.type == 0):
-                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 2) - int(self.position[1]/40))*40
-                                    print("new pos : ",int(self.position[1])/40 +((grid_rows - i - 2) - int(temp[1]/40)))
+                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 2) - int(self.position[1]/variables.blocksize))*variables.blocksize
                                     self.placed = True
                                     break
                                 else: 
-                                    #print("position: ", self.position)
-                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 1) - int(temp[1]/40))*40
-                                    print("new pos : ",int(self.position[1])/40 +((grid_rows - i - 1) - int(temp[1]/40)))
-                                    #print(" new posy : ", int(self.position[1]) +(int(temp[1]/40) - grid_rows - i - 4)*40)
+                                    self.position[1] = int(self.position[1]) +((grid_rows - i - 1) - int(temp[1]/variables.blocksize))*variables.blocksize
                                     self.placed = True
                                     break
                         else: 
                             if (grid[grid_rows -i-1][grid_position[0] + j] == 0 and self.block_type[rows - 2][j] != 0 and self.block_type[2] == [0,0,0]):
-                                print(self.block_type)
                                 for x in range(rows):
                                     for y in range(cols):
                                         for z in range(grid_rows - i):
@@ -326,30 +309,22 @@ class Tetrominos:
                                                 #check if there is a block way higher
                                                     if(grid_rows -i- z -1 ) < 24 and (grid_position[0] + y2) < 10:
                                                         if(grid[grid_rows - i - z -1][grid_position[0]+y2] != 0 and self.block_type[rows - (z%3)- 1][y2] != 0):
-                                                            print("higher block aws detected")
                                                             higher_block = True
                                         #check if the position found is valid, if there are no blocks around,
                                         #  that would make it impossible to place it there
                                         if(grid_rows -i-1 - x) < 24 and (grid_position[0] + y) < 10:
-                                            print(grid_rows -i-1 - x)
                                             if(grid[grid_rows -i-1 - x][grid_position[0] + y] != 0 and self.block_type[rows - x- 1][y] != 0):
                                                 can_be_placed = False
-                                                print("can be palced is set to false")
                                         
                                 #checking the buttom of the block
                                 #change the position of the block
                                 if(can_be_placed and not(higher_block)):
-                                    print("grid position: ",(grid_rows - i - 1),grid_position[0] + j)
                                     if (self.type == 0):
-                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(self.position[1]/40))*40
-                                        print("new pos : ",int(self.position[1])/40 +((grid_rows - i ) - int(temp[1]/40)))
+                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(self.position[1]/variables.blocksize))*variables.blocksize
                                         self.placed = True
                                         break
                                     else: 
-                                        #print("position: ", self.position)
-                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(temp[1]/40))*40
-                                        print("new pos : ",int(self.position[1])/40 +((grid_rows - i) - int(temp[1]/40)))
-                                        #print(" new posy : ", int(self.position[1]) +(int(temp[1]/40) - grid_rows - i - 4)*40)
+                                        self.position[1] = int(self.position[1]) +((grid_rows - i ) - int(temp[1]/variables.blocksize))*variables.blocksize
                                         self.placed = True
                                         break
                 if(self.placed == True):
@@ -376,10 +351,10 @@ class Tetrominos:
         self.position = position
 
     def get_grid_position(self):
-        return int((self.position[0])/40 - 2), int((self.position[1])/40 - 2)
+        return int((self.position[0])/variables.blocksize - 2), int((self.position[1])/variables.blocksize - 2)
 
     def update(self, level, grid):
         self.level = level
-        self.move(grid)
         self.draw()
+        self.move(grid)
         
